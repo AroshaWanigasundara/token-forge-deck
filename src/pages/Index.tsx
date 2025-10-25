@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Coins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Coins, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import CreateCoin from "@/components/CreateCoin";
 import TransferCoin from "@/components/TransferCoin";
 import MintCoin from "@/components/MintCoin";
 import BurnCoin from "@/components/BurnCoin";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -21,6 +25,13 @@ const Index = () => {
           <p className="text-muted-foreground text-lg">
             Create, transfer, mint and burn coins with ease
           </p>
+          <Button 
+            onClick={() => navigate('/assets')}
+            className="mt-6 gradient-primary glow-primary hover:opacity-90 transition-opacity"
+          >
+            <TrendingUp className="w-4 h-4 mr-2" />
+            View Assets
+          </Button>
         </header>
 
         {/* Main Interface */}
