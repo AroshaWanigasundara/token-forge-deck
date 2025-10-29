@@ -2,27 +2,63 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Coins, TrendingUp, Wallet, Info } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Coins, TrendingUp, Wallet } from "lucide-react";
+
+interface CoinMetadata {
+  id: number;
+  symbol: string;
+  name: string;
+  balance: number;
+  decimals: number;
+  totalSupply: number;
+  transferFee: string;
+  minimumBalance: number;
+  feePaymentEligible: boolean;
+}
 
 const Assets = () => {
-  const [coinId, setCoinId] = useState("");
-  const [address, setAddress] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+  const [selectedCoin, setSelectedCoin] = useState<CoinMetadata | null>(null);
 
   // Mock data - replace with actual blockchain data
-  const mockAssetData = {
-    symbol: "TKN",
-    name: "Test Token",
-    decimals: 18,
-    totalSupply: 1000000,
-    userBalance: 500,
-  };
-
-  const handleViewAsset = () => {
-    // This will be connected to blockchain later
-    console.log("Viewing asset:", { coinId, address });
-  };
+  const mockCoins: CoinMetadata[] = [
+    {
+      id: 1,
+      symbol: "TKN",
+      name: "Test Token",
+      balance: 500,
+      decimals: 18,
+      totalSupply: 1000000,
+      transferFee: "0.1%",
+      minimumBalance: 1,
+      feePaymentEligible: true,
+    },
+    {
+      id: 2,
+      symbol: "DEX",
+      name: "DEX Coin",
+      balance: 1250,
+      decimals: 18,
+      totalSupply: 5000000,
+      transferFee: "0.05%",
+      minimumBalance: 10,
+      feePaymentEligible: true,
+    },
+    {
+      id: 3,
+      symbol: "STK",
+      name: "Stake Token",
+      balance: 800,
+      decimals: 12,
+      totalSupply: 2500000,
+      transferFee: "0.2%",
+      minimumBalance: 5,
+      feePaymentEligible: false,
+    },
+  ];
 
   return (
     <div className="min-h-screen p-4 md:p-8">
@@ -36,148 +72,127 @@ const Assets = () => {
             Asset Overview
           </h1>
           <p className="text-muted-foreground text-lg">
-            View balances, supply, and metadata
+            View your coin holdings and metadata
           </p>
         </header>
 
-        {/* Query Form */}
+        {/* Wallet Address Input */}
         <Card className="glass-card mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Info className="w-5 h-5" />
-              Query Asset Information
+              <Wallet className="w-5 h-5" />
+              Connected Wallet
             </CardTitle>
             <CardDescription>
-              Enter coin ID and optionally an address to view details
+              Your wallet address to view coin balances
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="coinId">Coin ID</Label>
-                <Input
-                  id="coinId"
-                  type="number"
-                  placeholder="Enter coin ID"
-                  value={coinId}
-                  onChange={(e) => setCoinId(e.target.value)}
-                  className="glass-input"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="address">Address (Optional)</Label>
-                <Input
-                  id="address"
-                  placeholder="Enter address to check balance"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="glass-input"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="wallet">Wallet Address</Label>
+              <Input
+                id="wallet"
+                placeholder="Enter your wallet address"
+                value={walletAddress}
+                onChange={(e) => setWalletAddress(e.target.value)}
+                className="glass-input"
+              />
             </div>
-            <Button 
-              onClick={handleViewAsset}
-              className="w-full mt-6 gradient-primary glow-primary hover:opacity-90 transition-opacity"
-            >
-              View Asset
-            </Button>
           </CardContent>
         </Card>
 
-        {/* Asset Information Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <Card className="glass-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Coins className="w-4 h-4" />
-                Symbol
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold gradient-text">{mockAssetData.symbol}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Info className="w-4 h-4" />
-                Name
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold gradient-text">{mockAssetData.name}</div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Total Supply
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold gradient-text">
-                {mockAssetData.totalSupply.toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="glass-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Wallet className="w-4 h-4" />
-                Your Balance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold gradient-text">
-                {mockAssetData.userBalance.toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Metadata Table */}
+        {/* Coins List */}
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Coin Metadata</CardTitle>
-            <CardDescription>Detailed information about the asset</CardDescription>
+            <CardTitle>Your Assets</CardTitle>
+            <CardDescription>Click on a coin name to view detailed metadata</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Property</TableHead>
-                  <TableHead>Value</TableHead>
+                  <TableHead>Symbol</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="text-right">Balance</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <TableRow>
-                  <TableCell className="font-medium">Symbol</TableCell>
-                  <TableCell>{mockAssetData.symbol}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Name</TableCell>
-                  <TableCell>{mockAssetData.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Decimals</TableCell>
-                  <TableCell>{mockAssetData.decimals}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Total Supply</TableCell>
-                  <TableCell>{mockAssetData.totalSupply.toLocaleString()}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell className="font-medium">Your Balance</TableCell>
-                  <TableCell>{mockAssetData.userBalance.toLocaleString()}</TableCell>
-                </TableRow>
+                {mockCoins.map((coin) => (
+                  <TableRow key={coin.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
+                    <TableCell className="font-bold gradient-text">
+                      <div className="flex items-center gap-2">
+                        <Coins className="w-4 h-4" />
+                        {coin.symbol}
+                      </div>
+                    </TableCell>
+                    <TableCell 
+                      className="font-medium text-primary hover:underline cursor-pointer"
+                      onClick={() => setSelectedCoin(coin)}
+                    >
+                      {coin.name}
+                    </TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {coin.balance.toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+
+        {/* Coin Details Dialog */}
+        <Dialog open={selectedCoin !== null} onOpenChange={(open) => !open && setSelectedCoin(null)}>
+          <DialogContent className="glass-card border-primary/20">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-2xl gradient-text">
+                <Coins className="w-6 h-6" />
+                {selectedCoin?.name} ({selectedCoin?.symbol})
+              </DialogTitle>
+              <DialogDescription>
+                Detailed metadata for this coin
+              </DialogDescription>
+            </DialogHeader>
+            
+            {selectedCoin && (
+              <div className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Coin ID</p>
+                    <p className="text-lg font-semibold">{selectedCoin.id}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Decimals</p>
+                    <p className="text-lg font-semibold">{selectedCoin.decimals}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Your Balance</p>
+                    <p className="text-lg font-semibold gradient-text">{selectedCoin.balance.toLocaleString()}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Total Supply</p>
+                    <p className="text-lg font-semibold">{selectedCoin.totalSupply.toLocaleString()}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Transfer Fee</p>
+                    <p className="text-lg font-semibold">{selectedCoin.transferFee}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Minimum Balance</p>
+                    <p className="text-lg font-semibold">{selectedCoin.minimumBalance}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-1 pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground">Fee Payment Eligible</p>
+                  <Badge variant={selectedCoin.feePaymentEligible ? "default" : "secondary"}>
+                    {selectedCoin.feePaymentEligible ? "Eligible" : "Not Eligible"}
+                  </Badge>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
