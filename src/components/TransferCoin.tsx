@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRightLeft } from "lucide-react";
 import { toast } from "sonner";
 
@@ -11,7 +12,16 @@ const TransferCoin = () => {
     coinId: "",
     to: "",
     amount: "",
+    feeCoins: "",
   });
+
+  // Mock available coins for fee payment
+  const availableCoins = [
+    { id: "1", symbol: "BTC", name: "Bitcoin" },
+    { id: "2", symbol: "ETH", name: "Ethereum" },
+    { id: "3", symbol: "DOT", name: "Polkadot" },
+    { id: "4", symbol: "KSM", name: "Kusama" },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +88,32 @@ const TransferCoin = () => {
             />
           </div>
 
-          <Button 
+          <div className="space-y-2">
+            <Label htmlFor="feeCoins" className="text-foreground font-medium">
+              Transfer Fee Coin <span className="text-muted-foreground text-xs">(Optional)</span>
+            </Label>
+            <Select
+              value={formData.feeCoins}
+              onValueChange={(value) => setFormData({ ...formData, feeCoins: value })}
+            >
+              <SelectTrigger className="bg-background/50 border-accent/20 focus:border-accent transition-colors">
+                <SelectValue placeholder="Select fee payment coin" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-accent/20">
+                {availableCoins.map((coin) => (
+                  <SelectItem 
+                    key={coin.id} 
+                    value={coin.id}
+                    className="hover:bg-accent/10 focus:bg-accent/10"
+                  >
+                    {coin.symbol} - {coin.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
             type="submit" 
             className="w-full gradient-accent hover:opacity-90 transition-all duration-300 h-12 text-base font-semibold"
           >
