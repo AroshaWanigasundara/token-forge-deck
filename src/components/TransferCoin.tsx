@@ -101,7 +101,7 @@ const TransferCoin = () => {
               </SelectTrigger>
               <SelectContent className="bg-background border-accent/20">
                 <SelectItem 
-                  value=""
+                  value="none"
                   className="hover:bg-accent/10 focus:bg-accent/10 text-muted-foreground"
                 >
                   None (Use default fee)
