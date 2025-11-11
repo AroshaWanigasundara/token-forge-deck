@@ -100,6 +100,12 @@ const TransferCoin = () => {
                 <SelectValue placeholder="Select fee payment coin" />
               </SelectTrigger>
               <SelectContent className="bg-background border-accent/20">
+                <SelectItem 
+                  value=""
+                  className="hover:bg-accent/10 focus:bg-accent/10 text-muted-foreground"
+                >
+                  None (Use default fee)
+                </SelectItem>
                 {availableCoins.map((coin) => (
                   <SelectItem 
                     key={coin.id} 
